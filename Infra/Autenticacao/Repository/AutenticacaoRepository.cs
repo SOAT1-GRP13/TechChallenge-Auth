@@ -1,6 +1,5 @@
 ﻿using Domain.Autenticacao;
 using Domain.Base.Data;
-using Domain.Catalogo;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Autenticacao.Repository
