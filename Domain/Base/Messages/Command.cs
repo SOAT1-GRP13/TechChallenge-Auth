@@ -1,7 +1,6 @@
 ﻿using FluentValidation.Results;
 using MediatR;
 
-
 namespace Domain.Base.Messages
 {
     public abstract class Command<TResponse> : Message, IRequest<TResponse>

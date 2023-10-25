@@ -1,6 +1,5 @@
 ﻿using MediatR;
 
-
 namespace Domain.Base.Messages.CommonMessages.Notifications
 {
     public class DomainNotification : Message, INotification

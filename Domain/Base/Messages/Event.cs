@@ -1,6 +1,5 @@
 ﻿using MediatR;
 
-
 namespace Domain.Base.Messages
 {
     public abstract class Event : Message, INotification
