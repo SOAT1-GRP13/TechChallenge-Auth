@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Autenticacao.Commands;
 using Domain.Base.Communication.Mediator;
-using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 using Application.Autenticacao.Boundaries.Cliente;
 using Domain.Base.Messages.CommonMessages.Notifications;
