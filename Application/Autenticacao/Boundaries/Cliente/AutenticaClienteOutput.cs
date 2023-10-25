@@ -1,5 +1,4 @@
-﻿using Application.ServiceResult;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using Swashbuckle.AspNetCore.Annotations;
 
 namespace Application.Autenticacao.Boundaries.Cliente
 {

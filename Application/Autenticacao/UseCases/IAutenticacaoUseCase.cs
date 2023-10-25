@@ -2,7 +2,6 @@
 using Application.Autenticacao.Boundaries.LogIn;
 using Application.Autenticacao.Dto;
 using Application.Autenticacao.Dto.Cliente;
-using Domain.Autenticacao;
 
 namespace Application.Autenticacao.UseCases
 {
