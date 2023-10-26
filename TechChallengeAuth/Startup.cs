@@ -1,5 +1,7 @@
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using TechChallengeAuth.Setup;
 
 namespace TechChallengeAuth;
 
@@ -42,10 +44,19 @@ public class Startup
             });
         });
 
-        app.UseSwagger();
+        /*app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tech Challenge Auth V1");
+        });*/
+        app.UseSwagger(swagger =>
+        {
+            swagger.RouteTemplate = "swagger/{documentName}/swagger.json";
+        });
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("v1/swagger.json", "API V1");
+            c.RoutePrefix = "swagger";
         });
     }
 }
