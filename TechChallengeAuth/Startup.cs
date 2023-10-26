@@ -20,10 +20,8 @@ public class Startup
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-        services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Challenge Auth", Version = "v1" });
-        });
+        services.RegisterServices();
+        services.AddSwaggerGenConfig();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -44,19 +42,8 @@ public class Startup
             });
         });
 
-        /*app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tech Challenge Auth V1");
-        });*/
-        app.UseSwagger(swagger =>
-        {
-            swagger.RouteTemplate = "swagger/{documentName}/swagger.json";
-        });
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("v1/swagger.json", "API V1");
-            c.RoutePrefix = "swagger";
-        });
+        // Configure the HTTP request pipeline.
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
 }
