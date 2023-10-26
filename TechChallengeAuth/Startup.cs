@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 namespace TechChallengeAuth;
 
 public class Startup
@@ -12,6 +14,11 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
+
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Challenge Auth", Version = "v1" });
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -30,6 +37,12 @@ public class Startup
             {
                 await context.Response.WriteAsync("Welcome to running ASP.NET Core on AWS Lambda");
             });
+        });
+
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tech Challenge Auth V1");
         });
     }
 }
