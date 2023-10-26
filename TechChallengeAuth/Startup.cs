@@ -25,6 +25,9 @@ public class Startup
         services.AddDbContext<AutenticacaoContext>(options =>
                 options.UseNpgsql(connectionString));
 
+        services.Configure<ConfiguracaoToken>(Configuration.GetSection(ConfiguracaoToken.Configuration));
+        services.AddAuthenticationJWT(secret);
+
         services.AddControllers();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
@@ -41,6 +44,7 @@ public class Startup
         }
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
