@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
-namespace API.Setup
+namespace TechChallengeAuth.Setup
 {
     public static class AddSwaggerConfig
     {

@@ -1,3 +1,6 @@
+using Domain.Base.Communication.Mediator;
+using Domain.Base.Messages.CommonMessages.Notifications;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TechChallengeAuth.Controllers;
@@ -5,6 +8,10 @@ namespace TechChallengeAuth.Controllers;
 [Route("api/[controller]")]
 public class ValuesController : ControllerBase
 {
+    public ValuesController(INotificationHandler<DomainNotification> notifications, IMediatorHandler mediatorHandler) : base(notifications, mediatorHandler)
+    {
+    }
+
     // GET api/values
     [HttpGet]
     public IEnumerable<string> Get()

@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace API.Controllers
+namespace TechChallengeAuth.Controllers
 {
     public abstract class ControllerBase : Controller
     {

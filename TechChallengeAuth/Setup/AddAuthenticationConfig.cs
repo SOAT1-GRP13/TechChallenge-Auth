@@ -2,7 +2,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace API.Setup
+namespace TechChallengeAuth.Setup
 {
     public static class AddAuthenticationConfig
     {

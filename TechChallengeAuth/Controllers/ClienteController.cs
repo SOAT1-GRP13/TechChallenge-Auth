@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Application.Autenticacao.Boundaries.Cliente;
 using Domain.Base.Messages.CommonMessages.Notifications;
 
-namespace API.Controllers
+namespace TechChallengeAuth.Controllers
 {
     [ApiController]
     [Route("[Controller]")]

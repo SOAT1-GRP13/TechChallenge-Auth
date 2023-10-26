@@ -1,17 +1,17 @@
-﻿using Domain.Autenticacao;
-using MediatR;
-using Domain.Base.Communication.Mediator;
-using Domain.Base.Messages.CommonMessages.Notifications;
+﻿using MediatR;
+using Infra.Autenticacao;
+using Domain.Autenticacao;
+using Infra.Autenticacao.Repository;
+using Application.Autenticacao.Queries;
+using Application.Autenticacao.Handlers;
 using Application.Autenticacao.UseCases;
 using Application.Autenticacao.Commands;
+using Domain.Base.Communication.Mediator;
 using Application.Autenticacao.Boundaries.LogIn;
-using Application.Autenticacao.Handlers;
 using Application.Autenticacao.Boundaries.Cliente;
-using Application.Autenticacao.Queries;
-using Infra.Autenticacao.Repository;
-using Infra.Autenticacao;
+using Domain.Base.Messages.CommonMessages.Notifications;
 
-namespace API.Setup
+namespace TechChallengeAuth.Setup
 {
     public static class DependencyInjection
     { 

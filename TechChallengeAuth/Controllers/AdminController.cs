@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace API.Controllers
+namespace TechChallengeAuth.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
