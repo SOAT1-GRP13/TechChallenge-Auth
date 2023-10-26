@@ -32,8 +32,9 @@ public class Startup
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-        services.RegisterServices();
         services.AddSwaggerGenConfig();
+
+        services.RegisterServices();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,6 +43,10 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
         }
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthentication();
@@ -54,10 +59,6 @@ public class Startup
                 await context.Response.WriteAsync("Welcome to running ASP.NET Core on AWS Lambda");
             });
         });
-
-        // Configure the HTTP request pipeline.
-        app.UseSwagger();
-        app.UseSwaggerUI();
     }
 
     #region Metodos privados
