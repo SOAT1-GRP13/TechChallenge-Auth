@@ -1,7 +1,8 @@
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Infra.Autenticacao;
+using Domain.ValueObjects;
 using TechChallengeAuth.Setup;
+using Microsoft.EntityFrameworkCore;
 
 namespace TechChallengeAuth;
 
@@ -16,6 +17,14 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
+        var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+
+        string secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+
+        services.AddDbContext<AutenticacaoContext>(options =>
+                options.UseNpgsql(connectionString));
+
         services.AddControllers();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
