@@ -1,3 +1,9 @@
+using System.Reflection;
+using Infra.Autenticacao;
+using Domain.ValueObjects;
+using TechChallengeAuth.Setup;
+using Microsoft.EntityFrameworkCore;
+
 namespace TechChallengeAuth;
 
 public class Startup
@@ -11,7 +17,24 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
+        var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+
+        string secret = GetSecret();
+
+        services.AddDbContext<AutenticacaoContext>(options =>
+                options.UseNpgsql(connectionString));
+
+        services.Configure<ConfiguracaoToken>(Configuration.GetSection(ConfiguracaoToken.Configuration));
+        services.AddAuthenticationJWT(secret);
+
         services.AddControllers();
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        services.AddSwaggerGenConfig();
+
+        services.RegisterServices();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -20,8 +43,13 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
         }
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
@@ -32,4 +60,16 @@ public class Startup
             });
         });
     }
+
+    #region Metodos privados
+    private string GetSecret()
+    {
+        var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+
+        if (string.IsNullOrEmpty(secret))
+            throw new Exception("Secret não configurado");
+
+        return secret.ToString();
+    }
+    #endregion
 }
