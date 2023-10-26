@@ -20,7 +20,7 @@ public class Startup
         services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
         var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
 
-        string secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+        var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
 
         services.AddDbContext<AutenticacaoContext>(options =>
                 options.UseNpgsql(connectionString));
