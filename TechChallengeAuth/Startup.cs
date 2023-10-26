@@ -20,7 +20,7 @@ public class Startup
         services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
         var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
 
-        var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+        string secret = GetSecret();
 
         services.AddDbContext<AutenticacaoContext>(options =>
                 options.UseNpgsql(connectionString));
@@ -59,4 +59,16 @@ public class Startup
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+    #region Metodos privados
+    private string GetSecret()
+    {
+        var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+
+        if (string.IsNullOrEmpty(secret))
+            throw new Exception("Secret não configurado");
+
+        return secret.ToString();
+    }
+    #endregion
 }
