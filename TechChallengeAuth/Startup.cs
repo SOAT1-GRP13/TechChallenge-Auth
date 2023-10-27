@@ -19,12 +19,13 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
-        var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+        var PostgressConnectionString = Configuration.GetSection("DatabaseSettings:PostgresString").Value;
+        var DynamoDbConnectionString = Configuration.GetSection("DatabaseSettings:DynamoDBString").Value;
 
         string secret = GetSecret();
 
         services.AddDbContext<AutenticacaoContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(PostgressConnectionString));
 
         services.Configure<ConfiguracaoToken>(Configuration.GetSection(ConfiguracaoToken.Configuration));
         services.AddAuthenticationJWT(secret);
