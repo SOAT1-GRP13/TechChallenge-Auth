@@ -3,6 +3,7 @@ using Infra.Autenticacao;
 using Domain.ValueObjects;
 using TechChallengeAuth.Setup;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace TechChallengeAuth;
 
@@ -29,7 +30,7 @@ public class Startup
         services.AddAuthenticationJWT(secret);
 
         services.AddControllers();
-
+        services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         services.AddSwaggerGenConfig();
@@ -44,8 +45,15 @@ public class Startup
             app.UseDeveloperExceptionPage();
         }
 
-        app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwagger(swagger =>
+        {
+            swagger.RouteTemplate = "swagger/{documentName}/swagger.json";
+        });
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("v1/swagger.json", "API V1");
+            c.RoutePrefix = "swagger";
+        });
 
         app.UseHttpsRedirection();
         app.UseRouting();
@@ -67,7 +75,7 @@ public class Startup
         var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
 
         if (string.IsNullOrEmpty(secret))
-            throw new Exception("Secret não configurado");
+            throw new Exception("Secret nï¿½o configurado");
 
         return secret.ToString();
     }
