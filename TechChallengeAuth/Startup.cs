@@ -1,7 +1,9 @@
+using Amazon.DynamoDBv2;
 using System.Reflection;
 using Infra.Autenticacao;
 using Domain.ValueObjects;
 using TechChallengeAuth.Setup;
+using Amazon.DynamoDBv2.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -26,6 +28,12 @@ public class Startup
 
         services.AddDbContext<AutenticacaoContext>(options =>
                 options.UseNpgsql(PostgressConnectionString));
+
+        //Add DynamoDB configuration
+        var awsOptions = Configuration.GetAWSOptions();
+        services.AddDefaultAWSOptions(awsOptions);
+        services.AddAWSService<IAmazonDynamoDB>();
+        services.AddScoped<IDynamoDBContext, DynamoDBContext>();
 
         services.Configure<ConfiguracaoToken>(Configuration.GetSection(ConfiguracaoToken.Configuration));
         services.AddAuthenticationJWT(secret);
