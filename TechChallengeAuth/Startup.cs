@@ -51,7 +51,7 @@ public class Startup
         });
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("v1/swagger.json", "API V1");
+            c.SwaggerEndpoint("v1/swagger.json", "Auth API V1");
             c.RoutePrefix = "swagger";
         });
 
