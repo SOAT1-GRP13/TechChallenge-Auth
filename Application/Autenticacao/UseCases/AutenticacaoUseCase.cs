@@ -55,6 +55,17 @@ namespace Application.Autenticacao.UseCases
             return new AutenticaClienteOutput();
         }
 
+        public async Task<AutenticaClienteOutput> AutenticaClientePorNome(string nome)
+        {
+            var guid = new Guid();
+
+            var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
+
+            await _cachedTokenRepository.SetToken(guid, nome, token);
+
+            return new AutenticaClienteOutput(nome, token);
+        }
+
         public void Dispose()
         {
             GC.SuppressFinalize(this);

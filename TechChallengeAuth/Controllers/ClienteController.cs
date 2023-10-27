@@ -44,6 +44,28 @@ namespace TechChallengeAuth.Controllers
         }
 
         [HttpPost]
+        [Route("AutenticaClientePorNome")]
+        [SwaggerOperation(
+            Summary = "Identificação do cliente por nome",
+            Description = "Endpoint responsavel por autenticar o cliente por nome")]
+        [SwaggerResponse(200, "Retorna dados se autenticado ou não", typeof(AutenticaClienteOutput))]
+        [SwaggerResponse(500, "Caso algo inesperado aconteça")]
+        public async Task<IActionResult> AutenticaClientePorNome([FromBody] AutenticaClientePorNomeInput input)
+        {
+            var command = new AutenticaClientePorNomeCommand(input);
+            var autenticado = await _mediatorHandler.EnviarComando<AutenticaClientePorNomeCommand, AutenticaClienteOutput>(command);
+
+            if (OperacaoValida())
+            {
+                return Ok(autenticado);
+            }
+            else
+            {
+                return this.StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+            }
+        }
+
+        [HttpPost]
         [Route("CadastraCliente")]
         [SwaggerOperation(
             Summary = "Cadastro do cliente",
