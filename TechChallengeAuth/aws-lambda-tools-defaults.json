@@ -6,7 +6,7 @@
     "All the command line options for the Lambda command can be specified in this file."
   ],
   "profile": "AwsIarrumei",
-  "region": "us-east-1",
+  "region": "us-west-2",
   "configuration": "Release",
   "s3-prefix": "TechChallengeAuth/",
   "template": "serverless.template",
