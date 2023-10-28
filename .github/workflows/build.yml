@@ -1,4 +1,4 @@
-name: .NET
+name: .NET-Deploy
 
 on:
   push:
@@ -6,12 +6,8 @@ on:
   pull_request:
     branches: [main]
 
-# defaults:
-#   run:
-#     working-directory: ./Services
-
 jobs:
-  build:
+  build and deploy:
     runs-on: ubuntu-latest
 
     steps:
