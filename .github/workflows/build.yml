@@ -6,9 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
-defaults:
-  run:
-    working-directory: ./Services
+# defaults:
+#   run:
+#     working-directory: ./Services
 
 jobs:
   build:
