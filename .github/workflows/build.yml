@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 # defaults:
 #   run:
@@ -12,31 +12,38 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-    - name: AWS CLI
-      run: dotnet tool install -g Amazon.Lambda.Tools
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
 
-    - name: AWS CLI Update
-      run: dotnet tool update -g Amazon.Lambda.Tools
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-west-2
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
 
-    - name: Restore dependencies
-      run: dotnet restore TechChallengeAuth.sln
+      - name: AWS CLI
+        run: dotnet tool install -g Amazon.Lambda.Tools
 
-    - name: Build
-      run: dotnet build --no-restore TechChallengeAuth.sln
+      - name: AWS CLI Update
+        run: dotnet tool update -g Amazon.Lambda.Tools
 
-    - name: deploy Lambda
-      id: create_package
-      working-directory: ./TechChallengeAuth
-      run: dotnet lambda deploy-serverless --stackname TechChallengeAuth --s3-bucket tech-challenge-soat1-grp13-s3-auth
+      - name: Restore dependencies
+        run: dotnet restore TechChallengeAuth.sln
+
+      - name: Build
+        run: dotnet build --no-restore TechChallengeAuth.sln
+
+      - name: deploy Lambda
+        id: create_package
+        working-directory: ./TechChallengeAuth
+        run: dotnet lambda deploy-serverless --stackname TechChallengeAuth --s3-bucket tech-challenge-soat1-grp13-s3-auth
 
     # - name: 'Upload to S3 Bucket'
     #   run: aws s3 cp ${{ steps.create_package.outputs.package_name }} s3://tech-challenge-soat1-grp13-s3-auth
