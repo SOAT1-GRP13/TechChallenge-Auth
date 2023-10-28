@@ -1,0 +1,42 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    working-directory: ./Services
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: AWS CLI
+      run: dotnet tool install -g Amazon.Lambda.Tools
+
+    - name: AWS CLI Update
+      run: dotnet tool update -g Amazon.Lambda.Tools
+
+    - name: Restore dependencies
+      run: dotnet restore TechChallengeAuth.sln
+
+    - name: Build
+      run: dotnet build --no-restore TechChallengeAuth.sln
+
+    - name: Zip Lambda
+      id: create_package
+      working-directory: ./TechChallengeAuth
+      run: dotnet lambda package
+
+    - name: 'Upload to S3 Bucket'
+      run: aws s3 cp ${{ steps.create_package.outputs.package_name }} s3://tech-challenge-soat1-grp13-s3-auth
