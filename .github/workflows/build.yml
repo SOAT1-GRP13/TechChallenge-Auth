@@ -33,10 +33,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore TechChallengeAuth.sln
 
-    - name: Zip Lambda
+    - name: deploy Lambda
       id: create_package
       working-directory: ./TechChallengeAuth
-      run: dotnet lambda package
+      run: dotnet lambda deploy-serverless --s3-bucket tech-challenge-soat1-grp13-s3-auth
 
-    - name: 'Upload to S3 Bucket'
-      run: aws s3 cp ${{ steps.create_package.outputs.package_name }} s3://tech-challenge-soat1-grp13-s3-auth
+    # - name: 'Upload to S3 Bucket'
+    #   run: aws s3 cp ${{ steps.create_package.outputs.package_name }} s3://tech-challenge-soat1-grp13-s3-auth
