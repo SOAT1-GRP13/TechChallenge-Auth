@@ -17,11 +17,13 @@ namespace Application.Autenticacao.UseCases
     public class AutenticacaoUseCase : IAutenticacaoUseCase
     {
         private readonly IAutenticacaoRepository _autenticacaoRepository;
+        private readonly IUsuarioLogadoRepository _UsuarioLogadoRepository;
         private readonly ConfiguracaoToken _settings;
 
-        public AutenticacaoUseCase(IAutenticacaoRepository autenticacaoRepository, IOptions<ConfiguracaoToken> options)
+        public AutenticacaoUseCase(IAutenticacaoRepository autenticacaoRepository, IUsuarioLogadoRepository usuarioLogadoRepository, IOptions<ConfiguracaoToken> options)
         {
             _autenticacaoRepository = autenticacaoRepository;
+            _UsuarioLogadoRepository = usuarioLogadoRepository;
             _settings = options.Value;
         }
 
@@ -53,6 +55,17 @@ namespace Application.Autenticacao.UseCases
             }
 
             return new AutenticaClienteOutput();
+        }
+
+        public async Task<AutenticaClienteOutput> AutenticaClientePorNome(string nome)
+        {
+            var guid = Guid.NewGuid();
+
+            var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
+
+            await _UsuarioLogadoRepository.AddUsuarioLogado(guid, nome);
+
+            return new AutenticaClienteOutput(nome, token);
         }
 
         public void Dispose()

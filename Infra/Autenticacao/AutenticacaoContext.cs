@@ -21,7 +21,7 @@ namespace Infra.Autenticacao
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration.GetSection("DatabaseSettings:ConnectionString").Value);
+            optionsBuilder.UseNpgsql(_configuration.GetSection("DatabaseSettings:PostgresString").Value);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
