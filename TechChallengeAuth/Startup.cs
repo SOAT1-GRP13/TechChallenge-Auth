@@ -6,6 +6,7 @@ using TechChallengeAuth.Setup;
 using Amazon.DynamoDBv2.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
+using Domain.Configuration;
 
 namespace TechChallengeAuth;
 
@@ -20,8 +21,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
-        var PostgressConnectionString = Configuration.GetSection("DatabaseSettings:PostgresString").Value;
+        services.Configure<Secrets>(Configuration);
+        var PostgressConnectionString = Configuration.GetSection("ConnectionString").Value;
 
         string secret = GetSecret();
 
@@ -33,8 +34,6 @@ public class Startup
         services.AddDefaultAWSOptions(awsOptions);
         services.AddAWSService<IAmazonDynamoDB>();
         services.AddScoped<IDynamoDBContext, DynamoDBContext>();
-
-        services.Configure<ConfiguracaoToken>(Configuration.GetSection(ConfiguracaoToken.Configuration));
         services.AddAuthenticationJWT(secret);
 
         services.AddControllers();
@@ -67,10 +66,16 @@ public class Startup
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+
+        using var scope = app.ApplicationServices.CreateScope();
+        using var dbAuthentication = scope.ServiceProvider.GetService<AutenticacaoContext>();
+
+        dbAuthentication!.Database.Migrate();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapGet("/", context => {
+            endpoints.MapGet("/", context =>
+            {
                 context.Response.Redirect("/swagger");
                 return Task.CompletedTask;
             });
@@ -80,10 +85,10 @@ public class Startup
     #region Metodos privados
     private string GetSecret()
     {
-        var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+        var secret = Configuration.GetSection("ClientSecret").Value;
 
         if (string.IsNullOrEmpty(secret))
-            throw new Exception("Secret n�o configurado");
+            throw new Exception("Secret não configurado");
 
         return secret.ToString();
     }

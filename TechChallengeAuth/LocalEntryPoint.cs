@@ -1,3 +1,5 @@
+using TechChallengeAuth.Setup;
+
 namespace TechChallengeAuth;
 
 /// <summary>
@@ -14,6 +16,10 @@ public class LocalEntryPoint
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
+                webBuilder.ConfigureAppConfiguration((_, configurationBuilder) =>
+                {
+                    configurationBuilder.AddAmazonSecretsManager("us-west-2", "soat1-grp13");
+                });
                 webBuilder.UseStartup<Startup>();
             });
 }
