@@ -11,7 +11,7 @@ namespace Infra.Autenticacao.Repository
             _dynamoDBContext = dynamoDBContext;
         }
 
-        public async Task<bool> AddUsuarioLogado(string usuarioId, string nome)
+        public async Task<bool> AddUsuarioLogado(Guid usuarioId, string nome)
         {
             try
             {

@@ -63,7 +63,7 @@ namespace Application.Autenticacao.UseCases
 
             var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
 
-            await _UsuarioLogadoRepository.AddUsuarioLogado(guid.ToString(), nome);
+            await _UsuarioLogadoRepository.AddUsuarioLogado(guid, nome);
 
             return new AutenticaClienteOutput(nome, token);
         }

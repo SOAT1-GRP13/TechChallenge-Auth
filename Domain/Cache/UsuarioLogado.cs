@@ -5,7 +5,7 @@ namespace Domain.Autenticacao
     [DynamoDBTable("customers_cache")]
     public class UsuarioLogado
     {
-        public UsuarioLogado(string usuarioId, string nome)
+        public UsuarioLogado(Guid usuarioId, string nome)
         {
             UsuarioId = usuarioId;
             Nome = nome;
@@ -13,7 +13,7 @@ namespace Domain.Autenticacao
         }
 
         [DynamoDBHashKey("userId")]
-        public string UsuarioId { get; set; }
+        public Guid UsuarioId { get; set; }
 
         [DynamoDBProperty("nome")]
         public string Nome { get; set; }
