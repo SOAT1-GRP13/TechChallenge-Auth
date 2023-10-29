@@ -12,6 +12,10 @@ namespace Domain.Autenticacao
             Ttl = DateTimeOffset.Now.AddDays(1).ToUnixTimeSeconds();
         }
 
+        public UsuarioLogado()
+        {
+        }
+
         [DynamoDBHashKey("userId")]
         public Guid UsuarioId { get; set; }
 
