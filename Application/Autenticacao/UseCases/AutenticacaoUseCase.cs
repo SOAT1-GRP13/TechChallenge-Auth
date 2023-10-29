@@ -59,7 +59,7 @@ namespace Application.Autenticacao.UseCases
 
         public async Task<AutenticaClienteOutput> AutenticaClientePorNome(string nome)
         {
-            var guid = new Guid();
+            var guid = Guid.NewGuid();
 
             var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
 
