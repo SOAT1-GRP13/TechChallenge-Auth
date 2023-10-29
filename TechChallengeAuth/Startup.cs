@@ -22,7 +22,6 @@ public class Startup
     {
         services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
         var PostgressConnectionString = Configuration.GetSection("DatabaseSettings:PostgresString").Value;
-        var DynamoDbConnectionString = Configuration.GetSection("DatabaseSettings:DynamoDBString").Value;
 
         string secret = GetSecret();
 
