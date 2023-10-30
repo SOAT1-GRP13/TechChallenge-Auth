@@ -21,7 +21,7 @@ namespace Infra.Autenticacao
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration.GetSection("DatabaseSettings:PostgresString").Value);
+            optionsBuilder.UseNpgsql(_configuration.GetSection("ConnectionString").Value);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,7 +38,7 @@ namespace Infra.Autenticacao
                 && types.Contains(i.GenericTypeArguments[0]))
                 );
 
-            //Adicionando usuario padrão
+            //Adicionando usuario padrï¿½o
             //Senha Teste@123
             modelBuilder.Entity<AcessoUsuario>()
                 .HasData(

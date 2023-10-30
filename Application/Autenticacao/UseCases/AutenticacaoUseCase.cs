@@ -4,6 +4,7 @@ using Application.Autenticacao.Dto;
 using Application.Autenticacao.Dto.Cliente;
 using Domain.Autenticacao;
 using Domain.Autenticacao.Enums;
+using Domain.Configuration;
 using Domain.ValueObjects;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -18,9 +19,11 @@ namespace Application.Autenticacao.UseCases
     {
         private readonly IAutenticacaoRepository _autenticacaoRepository;
         private readonly IUsuarioLogadoRepository _UsuarioLogadoRepository;
-        private readonly ConfiguracaoToken _settings;
+        private readonly Secrets _settings;
 
-        public AutenticacaoUseCase(IAutenticacaoRepository autenticacaoRepository, IUsuarioLogadoRepository usuarioLogadoRepository, IOptions<ConfiguracaoToken> options)
+        public AutenticacaoUseCase(IAutenticacaoRepository autenticacaoRepository,
+         IUsuarioLogadoRepository usuarioLogadoRepository,
+          IOptions<Secrets> options)
         {
             _autenticacaoRepository = autenticacaoRepository;
             _UsuarioLogadoRepository = usuarioLogadoRepository;
