@@ -8,6 +8,7 @@ using Domain.Configuration;
 using Domain.ValueObjects;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -51,13 +52,13 @@ namespace Application.Autenticacao.UseCases
 
             var autenticado = await _autenticacaoRepository.AutenticaCliente(usuario);
 
-            if (!string.IsNullOrEmpty(autenticado.CPF))
-            {
-                var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id);
-                return new AutenticaClienteOutput(autenticado.Nome, token);
-            }
+            if (string.IsNullOrEmpty(autenticado.CPF))
+                return new AutenticaClienteOutput();
 
-            return new AutenticaClienteOutput();
+            await _UsuarioLogadoRepository.AddUsuarioLogado(autenticado.Id, autenticado.Nome);
+
+            var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id);
+            return new AutenticaClienteOutput(autenticado.Nome, token);
         }
 
         public async Task<AutenticaClienteOutput> AutenticaClientePorNome(string nome)
