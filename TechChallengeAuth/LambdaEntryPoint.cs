@@ -1,3 +1,5 @@
+using TechChallengeAuth.Setup;
+
 namespace TechChallengeAuth;
 
 /// <summary>
@@ -23,11 +25,15 @@ public class LambdaEntryPoint :
 {
     /// <summary>
     /// The builder has configuration, logging and Amazon API Gateway already configured. The startup class
-    /// needs to be configured in this method using the UseStartup<>() method.
+    /// needs to be configured in this method using the UseStartup() method.
     /// </summary>
     /// <param name="builder"></param>
     protected override void Init(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration((_, configurationBuilder) =>
+        {
+            configurationBuilder.AddAmazonSecretsManager("us-west-2", "soat1-grp13");
+        });
         builder
             .UseStartup<Startup>();
     }
