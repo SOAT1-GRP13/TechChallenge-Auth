@@ -4,10 +4,12 @@
     {
         public DatabaseSettings()
         {
-            ConnectionString = string.Empty;
+            PostgresString = string.Empty;
+            DynamoDbString = string.Empty;
         }
 
         public const string DatabaseConfiguration = "DatabaseSettings";
-        public string ConnectionString { get; set; }
+        public string PostgresString { get; set; }
+        public string DynamoDbString { get; set; }
     }
 }

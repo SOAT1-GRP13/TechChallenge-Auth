@@ -1,9 +1,12 @@
+using Amazon.DynamoDBv2;
 using System.Reflection;
 using Infra.Autenticacao;
 using Domain.ValueObjects;
 using TechChallengeAuth.Setup;
+using Amazon.DynamoDBv2.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
+using Domain.Configuration;
 
 namespace TechChallengeAuth;
 
@@ -18,15 +21,19 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.Configure<DatabaseSettings>(Configuration.GetSection(DatabaseSettings.DatabaseConfiguration));
-        var connectionString = Configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+        services.Configure<Secrets>(Configuration);
+        var PostgressConnectionString = Configuration.GetSection("ConnectionString").Value;
 
         string secret = GetSecret();
 
         services.AddDbContext<AutenticacaoContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(PostgressConnectionString));
 
-        services.Configure<ConfiguracaoToken>(Configuration.GetSection(ConfiguracaoToken.Configuration));
+        //Add DynamoDB configuration
+        var awsOptions = Configuration.GetAWSOptions();
+        services.AddDefaultAWSOptions(awsOptions);
+        services.AddAWSService<IAmazonDynamoDB>();
+        services.AddScoped<IDynamoDBContext, DynamoDBContext>();
         services.AddAuthenticationJWT(secret);
 
         services.AddControllers();
@@ -51,7 +58,7 @@ public class Startup
         });
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("v1/swagger.json", "API V1");
+            c.SwaggerEndpoint("v1/swagger.json", "Auth API V1");
             c.RoutePrefix = "swagger";
         });
 
@@ -59,10 +66,16 @@ public class Startup
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+
+        using var scope = app.ApplicationServices.CreateScope();
+        using var dbAuthentication = scope.ServiceProvider.GetService<AutenticacaoContext>();
+
+        dbAuthentication!.Database.Migrate();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapGet("/", context => {
+            endpoints.MapGet("/", context =>
+            {
                 context.Response.Redirect("/swagger");
                 return Task.CompletedTask;
             });
@@ -72,10 +85,10 @@ public class Startup
     #region Metodos privados
     private string GetSecret()
     {
-        var secret = Configuration.GetSection("ConfiguracaoToken:ClientSecret").Value;
+        var secret = Configuration.GetSection("ClientSecret").Value;
 
         if (string.IsNullOrEmpty(secret))
-            throw new Exception("Secret n�o configurado");
+            throw new Exception("Secret não configurado");
 
         return secret.ToString();
     }

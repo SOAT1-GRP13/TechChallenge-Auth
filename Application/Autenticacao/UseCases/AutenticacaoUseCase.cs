@@ -4,9 +4,11 @@ using Application.Autenticacao.Dto;
 using Application.Autenticacao.Dto.Cliente;
 using Domain.Autenticacao;
 using Domain.Autenticacao.Enums;
+using Domain.Configuration;
 using Domain.ValueObjects;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -17,11 +19,15 @@ namespace Application.Autenticacao.UseCases
     public class AutenticacaoUseCase : IAutenticacaoUseCase
     {
         private readonly IAutenticacaoRepository _autenticacaoRepository;
-        private readonly ConfiguracaoToken _settings;
+        private readonly IUsuarioLogadoRepository _UsuarioLogadoRepository;
+        private readonly Secrets _settings;
 
-        public AutenticacaoUseCase(IAutenticacaoRepository autenticacaoRepository, IOptions<ConfiguracaoToken> options)
+        public AutenticacaoUseCase(IAutenticacaoRepository autenticacaoRepository,
+         IUsuarioLogadoRepository usuarioLogadoRepository,
+          IOptions<Secrets> options)
         {
             _autenticacaoRepository = autenticacaoRepository;
+            _UsuarioLogadoRepository = usuarioLogadoRepository;
             _settings = options.Value;
         }
 
@@ -46,13 +52,24 @@ namespace Application.Autenticacao.UseCases
 
             var autenticado = await _autenticacaoRepository.AutenticaCliente(usuario);
 
-            if (!string.IsNullOrEmpty(autenticado.CPF))
-            {
-                var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id);
-                return new AutenticaClienteOutput(autenticado.Nome, token);
-            }
+            if (string.IsNullOrEmpty(autenticado.CPF))
+                return new AutenticaClienteOutput();
 
-            return new AutenticaClienteOutput();
+            await _UsuarioLogadoRepository.AddUsuarioLogado(autenticado.Id, autenticado.Nome);
+
+            var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id);
+            return new AutenticaClienteOutput(autenticado.Nome, token);
+        }
+
+        public async Task<AutenticaClienteOutput> AutenticaClientePorNome(string nome)
+        {
+            var guid = Guid.NewGuid();
+
+            var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
+
+            await _UsuarioLogadoRepository.AddUsuarioLogado(guid, nome);
+
+            return new AutenticaClienteOutput(nome, token);
         }
 
         public void Dispose()

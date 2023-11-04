@@ -9,6 +9,7 @@ namespace Application.Autenticacao.UseCases
     {
         Task<LogInUsuarioOutput> AutenticaUsuario(LoginUsuarioDto input);
         Task<AutenticaClienteOutput> AutenticaCliente(IdentificaDto input);
+        Task<AutenticaClienteOutput> AutenticaClientePorNome(string nome);
         string EncryptPassword(string dataToEncrypt);
     }
 }
