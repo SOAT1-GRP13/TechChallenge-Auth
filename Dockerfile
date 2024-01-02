@@ -24,4 +24,4 @@ COPY --from=build /app/out .
 EXPOSE 80
 
 # Iniciar a aplicação quando o contêiner for iniciado
-ENTRYPOINT ["dotnet", "API.dll"]
+ENTRYPOINT ["dotnet", "TechChallengeAuth.dll"]
