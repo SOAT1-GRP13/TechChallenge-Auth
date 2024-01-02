@@ -11,16 +11,17 @@ namespace Infra.Autenticacao.Repository
             _dynamoDBContext = dynamoDBContext;
         }
 
-        public async Task<bool> AddUsuarioLogado(Guid usuarioId, string nome)
+        public async Task<bool> AddUsuarioLogado(string token)
         {
             try
             {
-                var userLogin = new UsuarioLogado(usuarioId, nome);
+                var userLogin = new UsuarioLogado(token);
                 await _dynamoDBContext.SaveAsync(userLogin);
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                var teste = e.Message;
                 return false;
 
             }

@@ -5,6 +5,7 @@ using Domain.Base.Communication.Mediator;
 using Swashbuckle.AspNetCore.Annotations;
 using Application.Autenticacao.Boundaries.Cliente;
 using Domain.Base.Messages.CommonMessages.Notifications;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TechChallengeAuth.Controllers
 {
@@ -44,6 +45,7 @@ namespace TechChallengeAuth.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("AutenticaClientePorNome")]
         [SwaggerOperation(
             Summary = "Identificação do cliente por nome",
@@ -61,7 +63,7 @@ namespace TechChallengeAuth.Controllers
             }
             else
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
             }
         }
 

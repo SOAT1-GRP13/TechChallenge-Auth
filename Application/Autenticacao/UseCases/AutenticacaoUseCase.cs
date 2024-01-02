@@ -5,10 +5,8 @@ using Application.Autenticacao.Dto.Cliente;
 using Domain.Autenticacao;
 using Domain.Autenticacao.Enums;
 using Domain.Configuration;
-using Domain.ValueObjects;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -40,6 +38,7 @@ namespace Application.Autenticacao.UseCases
             if (!string.IsNullOrEmpty(autenticado.NomeUsuario))
             {
                 var token = GenerateToken(autenticado.NomeUsuario, autenticado.Role.ToString(), autenticado.Id);
+                await _UsuarioLogadoRepository.AddUsuarioLogado(token);
                 return new LogInUsuarioOutput(input.NomeUsuario, token);
             }
 
@@ -55,9 +54,9 @@ namespace Application.Autenticacao.UseCases
             if (string.IsNullOrEmpty(autenticado.CPF))
                 return new AutenticaClienteOutput();
 
-            await _UsuarioLogadoRepository.AddUsuarioLogado(autenticado.Id, autenticado.Nome);
-
             var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id);
+
+            await _UsuarioLogadoRepository.AddUsuarioLogado(token);
             return new AutenticaClienteOutput(autenticado.Nome, token);
         }
 
@@ -67,7 +66,7 @@ namespace Application.Autenticacao.UseCases
 
             var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
 
-            await _UsuarioLogadoRepository.AddUsuarioLogado(guid, nome);
+            await _UsuarioLogadoRepository.AddUsuarioLogado(token);
 
             return new AutenticaClienteOutput(nome, token);
         }
