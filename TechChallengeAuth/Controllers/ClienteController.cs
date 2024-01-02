@@ -45,7 +45,6 @@ namespace TechChallengeAuth.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("AutenticaClientePorNome")]
         [SwaggerOperation(
             Summary = "Identificação do cliente por nome",
