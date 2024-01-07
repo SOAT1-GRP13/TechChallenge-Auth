@@ -138,7 +138,7 @@ namespace Domain.Base.DomainObjects
 
         public static void ValidarSeFalso(bool boolvalor, string mensagem)
         {
-            if (!boolvalor)
+            if (boolvalor)
             {
                 throw new DomainException(mensagem);
             }
@@ -146,7 +146,7 @@ namespace Domain.Base.DomainObjects
 
         public static void ValidarSeVerdadeiro(bool boolvalor, string mensagem)
         {
-            if (boolvalor)
+            if (!boolvalor)
             {
                 throw new DomainException(mensagem);
             }

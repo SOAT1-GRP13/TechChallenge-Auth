@@ -2,25 +2,23 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace Domain.Autenticacao
 {
-    [DynamoDBTable("customers_cache")]
+    [DynamoDBTable("usuariosLogados")]
     public class UsuarioLogado
     {
-        public UsuarioLogado(Guid usuarioId, string nome)
+        public UsuarioLogado(string token)
         {
-            UsuarioId = usuarioId;
-            Nome = nome;
-            Ttl = DateTimeOffset.Now.AddDays(1).ToUnixTimeSeconds();
+            Token = "Bearer " + token;
+            Ttl = DateTimeOffset.Now.AddHours(2).ToUnixTimeSeconds();
         }
 
         public UsuarioLogado()
         {
+            Token = string.Empty;
+            Ttl = 0;
         }
 
-        [DynamoDBHashKey("userId")]
-        public Guid UsuarioId { get; set; }
-
-        [DynamoDBProperty("nome")]
-        public string Nome { get; set; }
+        [DynamoDBHashKey("token")]
+        public string Token { get; set; }
 
         [DynamoDBProperty("ttl")]
         public long Ttl { get; set; }
