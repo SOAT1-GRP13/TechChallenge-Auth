@@ -8,7 +8,10 @@ COPY ./TechChallengeAuth/*.csproj ./TechChallengeAuth/
 COPY ./Application/*.csproj ./Application/
 COPY ./Domain/*.csproj ./Domain/
 COPY ./Infra/*.csproj ./Infra/
-COPY ./TechChallengeAuth.Tests/*.csproj ./TechChallengeAuth.Tests/
+COPY ./Tests/TechChallengeAuth.Tests/*.csproj ./Tests/TechChallengeAuth.Tests/
+COPY ./Tests/Application.Tests/*.csproj ./Tests/Application.Tests/
+COPY ./Tests/Domain.Tests/*.csproj ./Tests/Domain.Tests/
+COPY ./Tests/Infra.Tests/*.csproj ./Tests/Infra.Tests/
 RUN dotnet restore
 
 # Copiando o código-fonte e compilando a aplicação
