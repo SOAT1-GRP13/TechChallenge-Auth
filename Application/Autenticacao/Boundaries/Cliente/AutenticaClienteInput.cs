@@ -4,6 +4,13 @@ namespace Application.Autenticacao.Boundaries.Cliente
 {
     public class AutenticaClienteInput
     {
+
+        public AutenticaClienteInput()
+        {
+            CPF = string.Empty;
+            Senha = string.Empty;
+        }
+
         public AutenticaClienteInput(string cPF, string senha)
         {
             CPF = cPF;

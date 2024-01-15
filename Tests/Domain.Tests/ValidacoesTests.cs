@@ -11,7 +11,7 @@ namespace Domain.Testes
             // Arrange
             var objeto1 = new object();
             var objeto2 = objeto1;
-            var mensagem = "Objetos são iguais";
+            var mensagem = "Objetos sÃ£o iguais";
 
             // Act
             try
@@ -32,7 +32,7 @@ namespace Domain.Testes
             // Arrange
             var objeto1 = new object();
             var objeto2 = new object();
-            var mensagem = "Objetos são iguais";
+            var mensagem = "Objetos sï¿½o iguais";
 
             // Act
             try
@@ -53,7 +53,7 @@ namespace Domain.Testes
             // Arrange
             var objeto1 = new object();
             var objeto2 = new object();
-            var mensagem = "Objetos são diferentes";
+            var mensagem = "Objetos sï¿½o diferentes";
 
             // Act
             try
@@ -74,7 +74,7 @@ namespace Domain.Testes
             // Arrange
             var objeto1 = new object();
             var objeto2 = objeto1;
-            var mensagem = "Objetos são diferentes";
+            var mensagem = "Objetos sï¿½o diferentes";
 
             // Act
             try

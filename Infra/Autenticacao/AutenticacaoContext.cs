@@ -21,7 +21,11 @@ namespace Infra.Autenticacao
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration.GetSection("ConnectionString").Value);
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (!string.IsNullOrEmpty(env) && env == "Test")
+                optionsBuilder.UseInMemoryDatabase("auth");
+            else
+                optionsBuilder.UseNpgsql(_configuration.GetSection("ConnectionString").Value);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

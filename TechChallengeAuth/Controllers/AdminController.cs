@@ -31,16 +31,24 @@ namespace TechChallengeAuth.Controllers
         [Route("LogInUsuario")]
         public async Task<IActionResult> LogInUsuario([FromBody] LogInUsuarioInput input)
         {
-            var command = new AdminAutenticaCommand(input);
-            var autenticado = await _mediatorHandler.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput> (command);
+            try
+            {
+                var command = new AdminAutenticaCommand(input);
+                var autenticado = await _mediatorHandler.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(command);
 
-            if (OperacaoValida())
-            {
-                return Ok(autenticado);
+                if (OperacaoValida())
+                {
+                    return Ok(autenticado);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                                          $"Erro ao tentar realizar LogIn. Erro: {ex.Message}");
             }
         }
 

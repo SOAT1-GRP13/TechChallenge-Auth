@@ -31,16 +31,24 @@ namespace TechChallengeAuth.Controllers
         [SwaggerResponse(500, "Caso algo inesperado aconteça")]
         public async Task<IActionResult> AutenticaCliente([FromBody] AutenticaClienteInput input)
         {
-            var command = new AutenticaClienteCommand(input);
-            var autenticado = await _mediatorHandler.EnviarComando<AutenticaClienteCommand, AutenticaClienteOutput>(command);
+            try
+            {
+                var command = new AutenticaClienteCommand(input);
+                var autenticado = await _mediatorHandler.EnviarComando<AutenticaClienteCommand, AutenticaClienteOutput>(command);
 
-            if (OperacaoValida())
-            {
-                return Ok(autenticado);
+                if (OperacaoValida())
+                {
+                    return Ok(autenticado);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                                          $"Erro ao tentar realizar LogIn. Erro: {ex.Message}");
             }
         }
 
@@ -53,16 +61,24 @@ namespace TechChallengeAuth.Controllers
         [SwaggerResponse(500, "Caso algo inesperado aconteça")]
         public async Task<IActionResult> AutenticaClientePorNome([FromBody] AutenticaClientePorNomeInput input)
         {
-            var command = new AutenticaClientePorNomeCommand(input);
-            var autenticado = await _mediatorHandler.EnviarComando<AutenticaClientePorNomeCommand, AutenticaClienteOutput>(command);
+            try
+            {
+                var command = new AutenticaClientePorNomeCommand(input);
+                var autenticado = await _mediatorHandler.EnviarComando<AutenticaClientePorNomeCommand, AutenticaClienteOutput>(command);
 
-            if (OperacaoValida())
-            {
-                return Ok(autenticado);
+                if (OperacaoValida())
+                {
+                    return Ok(autenticado);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                                          $"Erro ao tentar realizar LogIn. Erro: {ex.Message}");
             }
         }
 
@@ -72,19 +88,27 @@ namespace TechChallengeAuth.Controllers
             Summary = "Cadastro do cliente",
             Description = "Endpoint responsavel por cadastrar o cliente")]
         [SwaggerResponse(200, "Cadastra o usuario e ja o autentica", typeof(AutenticaClienteOutput))]
-        [SwaggerResponse(500, "Caso algo inesperado aconteça")]        
+        [SwaggerResponse(500, "Caso algo inesperado aconteça")]
         public async Task<IActionResult> CadastraCliente([FromBody] CadastraClienteInput input)
         {
-            var command = new CadastraClienteCommand(input);
-            var autenticado = await _mediatorHandler.EnviarComando<CadastraClienteCommand, AutenticaClienteOutput>(command);
+            try
+            {
+                var command = new CadastraClienteCommand(input);
+                var autenticado = await _mediatorHandler.EnviarComando<CadastraClienteCommand, AutenticaClienteOutput>(command);
 
-            if (OperacaoValida())
-            {
-                return Ok(autenticado);
+                if (OperacaoValida())
+                {
+                    return Ok(autenticado);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                                          $"Erro ao tentar cadastrar usuario. Erro: {ex.Message}");
             }
         }
 
