@@ -1,14 +1,8 @@
 using Application.Autenticacao.Boundaries.Cliente;
-using Application.Autenticacao.Boundaries.LogIn;
-using Application.Autenticacao.Dto;
 using Application.Autenticacao.Dto.Cliente;
 using Application.Autenticacao.Queries;
-using Application.Autenticacao.UseCases;
-using Application.Tests.Autenticacao.Mock;
+using Application.Tests.Autenticacao.Mock.Repositories;
 using Domain.Autenticacao;
-using Domain.Base.Data;
-using Domain.Configuration;
-using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Application.Tests.Autenticacao.Queries

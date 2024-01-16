@@ -12,31 +12,40 @@ using TechChallengeAuth.Controllers;
 
 namespace TechChallengeAuth.Tests.Controllers
 {
-    public class AdminControllerTestes
+    public class AdminControllerTestes : IDisposable
     {
-        #region Testes unitários do LogInUsuario
-        [Fact]
-        public async Task AoChamarLoginUsuario_DeveRetornarOK_QuandoAsCredenciasEstiveremCorretas()
+        private readonly ServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvideStartTup;
+        private readonly Mock<IMediatorHandler> _mediatorHandlerMock;
+
+        public AdminControllerTestes()
         {
-            var serviceProvider = new ServiceCollection()
+            _serviceProvider = new ServiceCollection()
                .AddScoped<IMediatorHandler, MediatorHandler>()
                .AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>()
                .BuildServiceProvider();
 
-            var mediatorHandlerMock = new Mock<IMediatorHandler>();
+            _serviceProvideStartTup = new TestStartup().ConfigureServices(new ServiceCollection());
+            _mediatorHandlerMock = new Mock<IMediatorHandler>();
+        }
 
-            var domainNotificationHandler = serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+        #region Testes unitários do LogInUsuario
+        [Fact]
+        public async Task AoChamarLoginUsuario_DeveRetornarOK_QuandoAsCredenciasEstiveremCorretas()
+        {
 
-            var adminController = new AdminController(domainNotificationHandler, mediatorHandlerMock.Object);
+            var domainNotificationHandler = _serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+
+            var adminController = new AdminController(domainNotificationHandler, _mediatorHandlerMock.Object);
 
             var loginInput = new LogInUsuarioInput(
              "fiap",
              "Teste@123"
             );
 
-            mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
+            _mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
 
-            mediatorHandlerMock.Setup(x => x.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(It.IsAny<AdminAutenticaCommand>()))
+            _mediatorHandlerMock.Setup(x => x.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(It.IsAny<AdminAutenticaCommand>()))
                 .ReturnsAsync(new LogInUsuarioOutput(loginInput.NomeUsuario, "fdhfjsdhfjksdhfkj"));
 
             var resultado = await adminController.LogInUsuario(loginInput);
@@ -54,10 +63,8 @@ namespace TechChallengeAuth.Tests.Controllers
         public async Task AoChamarLoginUsuario_DeveRetornarBadRequest_AoNaoPreencherOsCamposObrigatorios()
         {
             // Arrange
-            var serviceProvider = new TestStartup().ConfigureServices(new ServiceCollection());
-
-            var domainNotificationHandler = serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
-            var mediatorHandler = serviceProvider.GetRequiredService<IMediatorHandler>();
+            var domainNotificationHandler = _serviceProvideStartTup.GetRequiredService<INotificationHandler<DomainNotification>>();
+            var mediatorHandler = _serviceProvideStartTup.GetRequiredService<IMediatorHandler>();
 
             var adminController = new AdminController(domainNotificationHandler, mediatorHandler);
 
@@ -77,30 +84,22 @@ namespace TechChallengeAuth.Tests.Controllers
         public async Task AoChamarLoginUsuario_DeveRetornarBadRequest_AoPreencherCredenciaisInvalidas()
         {
             // Arrange
-            var serviceProvider = new ServiceCollection()
-               .AddScoped<IMediatorHandler, MediatorHandler>()
-               .AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>()
-               .BuildServiceProvider();
-
-            var mediatorHandlerMock = new Mock<IMediatorHandler>();
 
             // Obtenha uma instância real de DomainNotificationHandler do contêiner
-            var domainNotificationHandler = serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+            var domainNotificationHandler = _serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
 
-            var adminController = new AdminController(domainNotificationHandler, mediatorHandlerMock.Object);
+            var adminController = new AdminController(domainNotificationHandler, _mediatorHandlerMock.Object);
 
             var loginInput = new LogInUsuarioInput("usuarioInvalido", "senhaInvalida");
 
-            mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
+            _mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
 
             domainNotificationHandler.Handle(new DomainNotification("Erro", "Usuário ou senha inválidos"), CancellationToken.None).Wait();
 
-            mediatorHandlerMock.Setup(x => x.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(It.IsAny<AdminAutenticaCommand>()))
+            _mediatorHandlerMock.Setup(x => x.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(It.IsAny<AdminAutenticaCommand>()))
                 .ReturnsAsync(new LogInUsuarioOutput("", ""));
 
-            var controller = new MockController(domainNotificationHandler, mediatorHandlerMock.Object);
-
-
+            var controller = new MockController(domainNotificationHandler, _mediatorHandlerMock.Object);
 
             //Act
             var resultado = await adminController.LogInUsuario(loginInput);
@@ -116,29 +115,28 @@ namespace TechChallengeAuth.Tests.Controllers
         public async Task AoChamarLoginUsuaro_DeveRetornarInternalError_AoOcorrerErroInesperado()
         {
             // Arrange
-            var serviceProvider = new ServiceCollection()
-               .AddScoped<IMediatorHandler, MediatorHandler>()
-               .AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>()
-               .BuildServiceProvider();
-
-            var mediatorHandlerMock = new Mock<IMediatorHandler>();
-
             // Obtenha uma instância real de DomainNotificationHandler do contêiner
-            var domainNotificationHandler = serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+            var domainNotificationHandler = _serviceProvideStartTup.GetRequiredService<INotificationHandler<DomainNotification>>();
 
-            var adminController = new AdminController(domainNotificationHandler, mediatorHandlerMock.Object);
+            var adminController = new AdminController(domainNotificationHandler, _mediatorHandlerMock.Object);
 
             var loginInput = new LogInUsuarioInput("usuarioInvalido", "senhaInvalida");
 
-            mediatorHandlerMock.Setup(x => x.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(It.IsAny<AdminAutenticaCommand>()))
+            _mediatorHandlerMock.Setup(x => x.EnviarComando<AdminAutenticaCommand, LogInUsuarioOutput>(It.IsAny<AdminAutenticaCommand>()))
                 .ThrowsAsync(new Exception("Simulando uma exceção"));
-            
+
             var resultado = await adminController.LogInUsuario(loginInput);
 
             //Assert
-                        var objectResult = Assert.IsType<ObjectResult>(resultado);
+            var objectResult = Assert.IsType<ObjectResult>(resultado);
             Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
             Assert.Equal("Erro ao tentar realizar LogIn. Erro: Simulando uma exceção", objectResult.Value);
+        }
+
+        public void Dispose()
+        {
+            _serviceProvider.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         #endregion

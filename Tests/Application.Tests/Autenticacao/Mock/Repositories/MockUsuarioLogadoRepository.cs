@@ -1,7 +1,7 @@
 using Domain.Autenticacao;
 using Moq;
 
-namespace Application.Tests.Autenticacao.Mock
+namespace Application.Tests.Autenticacao.Mock.Repositories
 {
     public static class MockUsuarioLogadoRepository
     {

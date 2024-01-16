@@ -3,35 +3,21 @@ using Application.Autenticacao.Boundaries.LogIn;
 using Application.Autenticacao.Dto;
 using Application.Autenticacao.Dto.Cliente;
 using Application.Autenticacao.UseCases;
-using Application.Tests.Autenticacao.Mock;
-using Domain.Autenticacao;
-using Domain.Configuration;
-using Microsoft.Extensions.Options;
+using Application.Tests.Autenticacao.Mock.UseCases;
 using Moq;
 
 namespace Application.Tests.Autenticacao.UseCases
 {
     public class AutenticacaoUseCaseTests : IDisposable
     {
-
-        private readonly IAutenticacaoRepository _autenticacaoRepository;
-        private readonly IUsuarioLogadoRepository _usuarioLogadoRepository;
-        private readonly IOptions<Secrets> _options;
         private readonly Mock<IAutenticacaoUseCase> _useCaseMock;
         private readonly AutenticacaoUseCase _useCase;
 
         public AutenticacaoUseCaseTests()
         {
-            _autenticacaoRepository = MockAutenticacaoRepository.GetAutenticacaoRepository().Object;
-            _usuarioLogadoRepository = MockUsuarioLogadoRepository.GetUsuarioLogadoRepository().Object;
-            _options = Options.Create(new Secrets()
-            {
-                ClientSecret = "9%&ujkio7&*(2)@pwqdmndd[lcnslw$01]{&!jd8#}kfgjaprmb2^40+djl=%-hAiO_$u38",
-                PreSalt = "qsdc76543$%4&*(kjhgftyumnb#~;",
-                PosSalt = "+_)(rtyumlp;~1'123$#@!GYUJN*&"
-            });
-            _useCaseMock = new Mock<IAutenticacaoUseCase>();
-            _useCase = new AutenticacaoUseCase(_autenticacaoRepository, _usuarioLogadoRepository, _options);
+
+            _useCaseMock = MockAutenticacaoUseCase.GetAutencacaoUseCaseMock();
+            _useCase = MockAutenticacaoUseCase.GetAutenticacaoUseCase();
         }
 
         [Fact]
@@ -79,7 +65,6 @@ namespace Application.Tests.Autenticacao.UseCases
 
         public void Dispose()
         {
-            _autenticacaoRepository.Dispose();
             _useCase.Dispose();
             GC.SuppressFinalize(this);
         }
