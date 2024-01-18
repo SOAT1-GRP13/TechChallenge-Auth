@@ -3,6 +3,7 @@ using Application.Autenticacao.Dto.Cliente;
 using Application.Autenticacao.Queries;
 using Application.Tests.Autenticacao.Mock.Repositories;
 using Domain.Autenticacao;
+using Domain.Base.Data;
 using Moq;
 
 namespace Application.Tests.Autenticacao.Queries
@@ -22,27 +23,23 @@ namespace Application.Tests.Autenticacao.Queries
             _query = new AutenticacaoQuery(_autenticacaoRepository);
         }
 
-        //Estudar melhor o moq do UnitOfWork da maneira que foi implementado
-        // [Fact]
-        // public async Task CadastraClienteTest()
-        // {
-        //     // var mockUow = new Mock<IRepository<AcessoCliente>>();
-        //     // mockUow.Setup(m => m.UnitOfWork).Returns();
+        [Fact]
+        public async Task CadastraClienteTest()
+        {
+            var cliente = new CadastraClienteDto(
+                    "teste@123",
+                    new CadastraClienteInput(
+                    "63852797071",
+                    "teste@123",
+                    "teste@teste.com.br",
+                    "teste")
 
-        //     var cliente = new CadastraClienteDto(
-        //             "teste@123",
-        //             new CadastraClienteInput(
-        //             "63852797071",
-        //             "teste@123",
-        //             "teste@teste.com.br",
-        //             "teste")
+                    );
 
-        //             );
+            _queryMock.Setup(u => u.CadastraCliente(cliente));
 
-        //     _queryMock.Setup(u => u.CadastraCliente(cliente));
-
-        //     await _query.CadastraCliente(cliente);
-        // }
+            await _query.CadastraCliente(cliente);
+        }
 
         [Fact]
         public async Task ClienteJaExisteTest()

@@ -1,4 +1,5 @@
 using Domain.Autenticacao;
+using Domain.Base.Data;
 using Moq;
 
 namespace Application.Tests.Autenticacao.Mock.Repositories
@@ -19,14 +20,10 @@ namespace Application.Tests.Autenticacao.Mock.Repositories
             mockRepo.Setup(r => r.CadastraCliente(It.IsAny<AcessoCliente>()));
             mockRepo.Setup(r => r.ClienteJaExiste(It.IsAny<AcessoCliente>())).ReturnsAsync(true);
 
+            var mockUow = new Mock<IUnitOfWork>();
+            mockUow.Setup(u => u.Commit()).ReturnsAsync(true);
 
-            // mockRepo.Setup(r => r.com)
-
-            // mockRepo.Setup(r => r.(It.IsAny<AcessoUsuario>())).ReturnsAsync((LeaveType leaveType) => 
-            // {
-            //     leaveTypes.Add(leaveType);
-            //     return leaveType;
-            // });
+            mockRepo.SetupGet(r => r.UnitOfWork).Returns(mockUow.Object);
 
             return mockRepo;
         }
