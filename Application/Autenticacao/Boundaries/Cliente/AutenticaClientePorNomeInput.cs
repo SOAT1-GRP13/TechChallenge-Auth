@@ -4,6 +4,10 @@ namespace Application.Autenticacao.Boundaries.Cliente
 {
     public class AutenticaClientePorNomeInput
     {
+        public AutenticaClientePorNomeInput()
+        {
+            Nome = string.Empty;
+        }
         public AutenticaClientePorNomeInput(string nome)
         {
             Nome = nome;

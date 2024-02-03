@@ -22,7 +22,7 @@ namespace Domain.Base.DomainObjects
 
         public static void ValidarSeDiferente(string pattern, string valor, string mensagem)
         {
-            var regex = new Regex(pattern);
+            var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromSeconds(5));
 
             if (!regex.IsMatch(valor))
             {

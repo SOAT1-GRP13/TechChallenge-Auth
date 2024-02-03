@@ -28,38 +28,23 @@ namespace Application.Autenticacao.Handlers
         {
             if (request.EhValido())
             {
-                try
+                CadastraClienteInput input = request.Input;
+
+                var clienteDto = new CadastraClienteDto(_autenticacaoUseCase.EncryptPassword(input.Senha), input);
+
+                if (await _autenticacaoQuery.ClienteJaExiste(clienteDto))
                 {
-
-                    CadastraClienteInput input = request.Input;
-
-                    var clienteDto = new CadastraClienteDto(_autenticacaoUseCase.EncryptPassword(input.Senha), input);
-
-                    if (await _autenticacaoQuery.ClienteJaExiste(clienteDto))
-                    {
-                        await _mediatorHandler.PublicarNotificacao(new DomainNotification(request.MessageType, "Cliente ja cadastrado"));
-                        return new AutenticaClienteOutput();
-                    }
-
-                    await _autenticacaoQuery.CadastraCliente(clienteDto);
-
-                    var identificaDto = new IdentificaDto(clienteDto.CPF, clienteDto.Senha);
-
-                    var autenticado = await _autenticacaoUseCase.AutenticaCliente(identificaDto);
-
-                    if (string.IsNullOrEmpty(autenticado.Nome))
-                    {
-                        await _mediatorHandler.PublicarNotificacao(new DomainNotification(request.MessageType, "Usuário ou senha inválidos"));
-                    }
-                    else
-                    {
-                        return autenticado;
-                    }
+                    await _mediatorHandler.PublicarNotificacao(new DomainNotification(request.MessageType, "Cliente ja cadastrado"));
+                    return new AutenticaClienteOutput();
                 }
-                catch (DomainException ex)
-                {
-                    await _mediatorHandler.PublicarNotificacao(new DomainNotification(request.MessageType, ex.Message));
-                }
+
+                await _autenticacaoQuery.CadastraCliente(clienteDto);
+
+                var identificaDto = new IdentificaDto(clienteDto.CPF, clienteDto.Senha);
+
+                var autenticado = await _autenticacaoUseCase.AutenticaCliente(identificaDto);
+
+                return autenticado;
             }
             else
             {

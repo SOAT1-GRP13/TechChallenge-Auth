@@ -4,6 +4,13 @@ namespace Application.Autenticacao.Boundaries.Cliente
 {
     public class CadastraClienteInput
     {
+        public CadastraClienteInput()
+        {
+            CPF = string.Empty;
+            Senha = string.Empty;
+            Email = string.Empty;
+            Nome = string.Empty;
+        }
         public CadastraClienteInput(string cPF, string senha, string email, string nome)
         {
             CPF = cPF;

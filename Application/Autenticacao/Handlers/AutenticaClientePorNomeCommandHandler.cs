@@ -30,17 +30,8 @@ namespace Application.Autenticacao.Handlers
 
                 return new AutenticaClienteOutput();
             }
+            return await _autenticacaoUseCase.AutenticaClientePorNome(request.Input.Nome);
 
-            try
-            {
-                return await _autenticacaoUseCase.AutenticaClientePorNome(request.Input.Nome);
-            }
-            catch (DomainException ex)
-            {
-                await _mediatorHandler.PublicarNotificacao(new DomainNotification(request.MessageType, ex.Message));
-            }
-
-            return new AutenticaClienteOutput();
         }
     }
 }
