@@ -1,0 +1,39 @@
+version: '3'
+services:
+  api-auth:
+    build:
+      context: .
+      args:
+        - BUILD_CONFIGURATION=Debug
+      dockerfile: Dockerfile
+    image: tech-challenge-soat1-grp13-auth:latest
+    restart: on-failure    
+    ports:
+      - "5270:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionString=User ID=fiap;Password=SenhaLocalAuth;Host=postgres-db-auth;Port=5432;Database=techChallengeAuth;Pooling=true;
+    depends_on:
+      postgres-db-auth:
+        condition: service_healthy
+
+  postgres-db-auth:  
+    hostname: postgres-compose
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "SenhaLocalAuth"
+      POSTGRES_USER: fiap
+      POSTGRES_DB: techChallengeAuth
+    ports:
+      - "15436:5432"
+    volumes:
+      - tech-challenge-soat1-grp13-db-data-auth:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+volumes:
+  tech-challenge-soat1-grp13-db-data-auth:

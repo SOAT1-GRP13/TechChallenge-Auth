@@ -14,9 +14,12 @@ COPY ./Tests/Domain.Tests/*.csproj ./Tests/Domain.Tests/
 COPY ./Tests/Infra.Tests/*.csproj ./Tests/Infra.Tests/
 RUN dotnet restore
 
+# Definindo a variável de ambiente para o modo de compilação, padrão é Release
+ARG BUILD_CONFIGURATION=Release
+
 # Copiando o código-fonte e compilando a aplicação
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c $BUILD_CONFIGURATION -o out
 
 # Executando a aplicação
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
