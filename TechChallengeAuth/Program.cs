@@ -1,13 +1,12 @@
-
 using System.Reflection;
+using Amazon.DynamoDBv2;
+using Infra.Autenticacao;
 using Domain.ValueObjects;
 using Domain.Configuration;
+using TechChallengeAuth.Setup;
+using Amazon.DynamoDBv2.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Filters;
-using TechChallengeAuth.Setup;
-using Infra.Autenticacao;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +78,6 @@ app.UseReDoc(c =>
     c.DocumentTitle = "REDOC API Documentation";
     c.SpecUrl = "/swagger/v1/swagger.json";
 });
-
 
 app.UseAuthentication();
 app.UseAuthorization();
