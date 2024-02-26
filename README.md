@@ -62,7 +62,7 @@ Você pode testar esta API de duas maneiras: usando o Postman ou o Swagger, que 
 Acessando o Swagger:
 
 Para acessar o Swagger do projeto localmente, utilize o seguinte link:
-- http://localhost:5271/swagger/index.html
+- http://localhost:5270/swagger/index.html
 
 Se quiser instalar toda a infraestrutura do projeto, você pode fazer seguindo os passos do projeto central:
 - https://github.com/SOAT1-GRP13/TechChallenge
@@ -85,7 +85,7 @@ docker-compose up
 
 No projeto foi instalado o REDOC e pode ser acessado através do link abaixo:
 
-- http://localhost:5271/api-docs/index.html
+- http://localhost:5270/api-docs/index.html
 
 # ✔️ Tecnologias utilizadas
 
