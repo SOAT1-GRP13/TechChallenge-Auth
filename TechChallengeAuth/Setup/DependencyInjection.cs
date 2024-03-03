@@ -30,6 +30,7 @@ namespace TechChallengeAuth.Setup
             services.AddTransient<IAutenticacaoRepository, AutenticacaoRepository>();
             services.AddTransient<IUsuarioLogadoRepository, UsuarioLogadoRepository>();
             services.AddTransient<IRequestHandler<CadastraClienteCommand,AutenticaClienteOutput>,  CadastraClienteCommandHandler>();
+            services.AddTransient<IRequestHandler<AnonimizarClienteCommand, bool>, AnonimizarClienteCommandHandler>();
             services.AddScoped<IAutenticacaoUseCase, AutenticacaoUseCase>();
             services.AddScoped<IAutenticacaoQuery, AutenticacaoQuery>();
             services.AddScoped<AutenticacaoContext>();

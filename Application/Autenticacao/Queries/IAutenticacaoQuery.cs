@@ -6,5 +6,6 @@ namespace Application.Autenticacao.Queries
     {
         Task<bool> ClienteJaExiste(CadastraClienteDto dto);
         Task CadastraCliente(CadastraClienteDto dto);
+        Task AnonimizaCliente(string cpf);
     }
 }
