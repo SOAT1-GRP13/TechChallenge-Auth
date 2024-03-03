@@ -53,6 +53,16 @@ namespace Infra.Autenticacao.Repository
             return await _context.AcessoCliente.Where(x => x.CPF == login.CPF || x.Email == login.Email).AnyAsync();
         }
 
+        public void AnonimizaClient(string cpf)
+        {
+            var cliente = _context.AcessoCliente.Where(x => x.CPF == cpf).FirstOrDefaultAsync().Result;
+
+            if (cliente is null)
+                return;
+
+            cliente.Anonimiza();
+        }
+
         public void Dispose()
         {
             _context.Dispose();

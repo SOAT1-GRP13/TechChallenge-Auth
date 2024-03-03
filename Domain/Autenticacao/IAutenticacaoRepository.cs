@@ -11,5 +11,7 @@ namespace Domain.Autenticacao
         Task<bool> ClienteJaExiste(AcessoCliente login);
 
         void CadastraCliente (AcessoCliente login);
+
+        void AnonimizaClient(string cpf);
     }
 }

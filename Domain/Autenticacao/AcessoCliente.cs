@@ -60,5 +60,12 @@ namespace Domain.Autenticacao
             Validacoes.ValidarSeVazio(Email, "O campo Email não pode estar vazio");
             Validacoes.ValidarEmail(Email, "Email inválido");
         }
+
+        public void Anonimiza()
+        {
+            CPF = "00000000000";
+            Nome = "Anonimo";
+            Email = "Anonimo@anonimo.com.br";
+        }
     }
 }

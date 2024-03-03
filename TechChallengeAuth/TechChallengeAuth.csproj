@@ -19,11 +19,11 @@
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.201.37" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

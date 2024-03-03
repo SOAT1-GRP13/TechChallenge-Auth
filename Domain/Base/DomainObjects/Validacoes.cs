@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Domain.Base.DomainObjects
 {
-    public class Validacoes
+    public static class Validacoes
     {
         public static void ValidarSeIgual(object object1, object object2, string mensagem)
         {
@@ -56,9 +56,9 @@ namespace Domain.Base.DomainObjects
             }
         }
 
-        public static void ValidarSeNulo(object object1, string mensagem)
+        public static void ValidarSeNulo(object? object1, string mensagem)
         {
-            if (object1 == null)
+            if (object1 is null)
             {
                 throw new DomainException(mensagem);
             }
@@ -200,7 +200,7 @@ namespace Domain.Base.DomainObjects
         {
             var trimmedEmail = email.Trim();
 
-            if (trimmedEmail.EndsWith("."))
+            if (trimmedEmail.EndsWith('.'))
             {
                 throw new DomainException(mensagem);
             }

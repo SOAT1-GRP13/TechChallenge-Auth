@@ -30,9 +30,5 @@ namespace Application.Autenticacao.Boundaries.LogIn
             Description = "Token de acesso do usuario",
             Format = "string")]
         public string TokenAcesso { get; set; }
-
-
-        //Futuramente
-        //public List<int> Pdvs { get; private set; }
     }
 }

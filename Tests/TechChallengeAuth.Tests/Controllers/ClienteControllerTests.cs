@@ -374,5 +374,143 @@ namespace TechChallengeAuth.Tests.Controllers
             GC.SuppressFinalize(this);
         }
         #endregion
+
+        #region Testes relacionados ao AnonimizarCliente
+        [Fact]
+        public async Task AoChamarAnonimizarCliente_DeveRetornarOk_AoInformarUmClienteValido()
+        {
+            var mediatorHandlerMock = new Mock<IMediatorHandler>();
+
+            var domainNotificationHandler = _serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+
+            var clienteController = new ClienteController(domainNotificationHandler, mediatorHandlerMock.Object);
+
+            var anonimizarInput = new AnonimizarClienteInput(
+                            "47253197836"
+                                       );
+
+            mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
+
+            mediatorHandlerMock.Setup(x => x.EnviarComando<AnonimizarClienteCommand, bool>(It.IsAny<AnonimizarClienteCommand>()))
+                .ReturnsAsync(true);
+
+            var resultado = await clienteController.AnonimizarCliente(anonimizarInput);
+
+            //Assert
+            var objectResult = Assert.IsType<OkObjectResult>(resultado);
+            var anonimizado = Assert.IsType<bool>(objectResult.Value);
+            Assert.True(anonimizado);
+
+            Assert.Equal(StatusCodes.Status200OK, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AoChamarAnonimizarCliente_DeveRetornarBadRequest_AoNaoPreencherOsCamposObrigatorios()
+        {
+            // Arrange
+            var domainNotificationHandler = _serviceProvideStartTup.GetRequiredService<INotificationHandler<DomainNotification>>();
+            var mediatorHandler = _serviceProvideStartTup.GetRequiredService<IMediatorHandler>();
+
+            var clienteController = new ClienteController(domainNotificationHandler, mediatorHandler);
+
+            var anonimizarInput = new AnonimizarClienteInput();
+
+            //Act
+            var resultado = await clienteController.AnonimizarCliente(anonimizarInput);
+
+            // Assert
+            var badRequestObjectResult = Assert.IsType<ObjectResult>(resultado);
+            var mensagensErro = Assert.IsType<List<string>>(badRequestObjectResult.Value);
+            Assert.Contains("CPF é obrigatório", mensagensErro);
+        }
+
+        [Fact]
+        public async Task AoChamarAnonimizarCliente_DeveRetornarInternalError_AoOcorrerErroInesperado()
+        {
+            // Arrange
+            var mediatorHandlerMock = new Mock<IMediatorHandler>();
+
+            // Obtenha uma instância real de DomainNotificationHandler do contêiner
+            var domainNotificationHandler = _serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+
+            var clienteController = new ClienteController(domainNotificationHandler, mediatorHandlerMock.Object);
+
+            var anonimizarInput = new AnonimizarClienteInput("47253197836");
+
+            mediatorHandlerMock.Setup(x => x.EnviarComando<AnonimizarClienteCommand, bool>(It.IsAny<AnonimizarClienteCommand>()))
+                .ThrowsAsync(new Exception("Simulando uma exceção"));
+
+            var resultado = await clienteController.AnonimizarCliente(anonimizarInput);
+
+            //Assert
+            var objectResult = Assert.IsType<ObjectResult>(resultado);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+            Assert.Equal("Erro ao tentar anonimizar usuário. Erro: Simulando uma exceção", objectResult.Value);
+        }
+
+        [Fact]
+        public async Task AoChamarAnonimizarCliente_DeveRetornarBadRequest_AoInformarUmClienteInvalido()
+        {
+            // Arrange
+            var mediatorHandlerMock = new Mock<IMediatorHandler>();
+
+            // Obtenha uma instância real de DomainNotificationHandler do contêiner
+            var domainNotificationHandler = _serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+
+            var clienteController = new ClienteController(domainNotificationHandler, mediatorHandlerMock.Object);
+
+            var anonimizarInput = new AnonimizarClienteInput("usuarioInvalido");
+
+            mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
+
+            domainNotificationHandler.Handle(new DomainNotification("Erro", "CPF inválido"), CancellationToken.None).Wait();
+
+            mediatorHandlerMock.Setup(x => x.EnviarComando<AnonimizarClienteCommand, bool>(It.IsAny<AnonimizarClienteCommand>()))
+                .ReturnsAsync(false);
+
+            var controller = new MockController(domainNotificationHandler, mediatorHandlerMock.Object);
+
+            //Act
+            var resultado = await clienteController.AnonimizarCliente(anonimizarInput);
+            var operacaoValida = controller.OperacaoValida();
+            var mensagensErro = controller.ObterMensagensErro();
+
+            // Assert
+            Assert.False(operacaoValida);
+            Assert.Contains("CPF inválido", mensagensErro);
+        }
+
+        [Fact]
+        public async Task AoChamarAnonimizarCliente_DeveRetornarBadRequest_AoInformarUmClienteNaoEncontrado()
+        {
+            // Arrange
+            var mediatorHandlerMock = new Mock<IMediatorHandler>();
+
+            // Obtenha uma instância real de DomainNotificationHandler do contêiner
+            var domainNotificationHandler = _serviceProvider.GetRequiredService<INotificationHandler<DomainNotification>>();
+
+            var clienteController = new ClienteController(domainNotificationHandler, mediatorHandlerMock.Object);
+
+            var anonimizarInput = new AnonimizarClienteInput("usuarioInvalido");
+
+            mediatorHandlerMock.Setup(x => x.PublicarNotificacao(It.IsAny<DomainNotification>()));
+
+            domainNotificationHandler.Handle(new DomainNotification("Erro", "Cliente não encontrado"), CancellationToken.None).Wait();
+
+            mediatorHandlerMock.Setup(x => x.EnviarComando<AnonimizarClienteCommand, bool>(It.IsAny<AnonimizarClienteCommand>()))
+                .ReturnsAsync(false);
+
+            var controller = new MockController(domainNotificationHandler, mediatorHandlerMock.Object);
+
+            //Act
+            var resultado = await clienteController.AnonimizarCliente(anonimizarInput);
+            var operacaoValida = controller.OperacaoValida();
+            var mensagensErro = controller.ObterMensagensErro();
+
+            // Assert
+            Assert.False(operacaoValida);
+            Assert.Contains("Cliente não encontrado", mensagensErro);
+        }
+        #endregion
     }
 }

@@ -22,14 +22,12 @@ namespace Application.Autenticacao.Boundaries.LogIn
             Title = "Nome do Usuario",
             Description = "Preencha com um nome unico de acesso",
             Format = "string")]
-       // [Required]
         public string NomeUsuario { get; set; }
 
         [SwaggerSchema(
             Title = "Senha",
             Description = "Preencha com a senha",
             Format = "string")]
-       // [Required]
         public string Senha { get; set; }
     }
 }

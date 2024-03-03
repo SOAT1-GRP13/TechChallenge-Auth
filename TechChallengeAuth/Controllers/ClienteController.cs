@@ -112,6 +112,33 @@ namespace TechChallengeAuth.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AnonimizarCliente")]
+        [SwaggerOperation(
+            Summary = "Anonimização do cliente",
+            Description = "Endpoint responsavel por anonimizar todos os dados que coletamos do cliente")]
+        [SwaggerResponse(200, "Cliente anonimizado", typeof(bool))]
+        [SwaggerResponse(500, "Caso algo inesperado aconteça")]
+        public async Task<IActionResult> AnonimizarCliente([FromBody] AnonimizarClienteInput input)
+        {
+            try
+            {
+                var command = new AnonimizarClienteCommand(input);
+                var anonimizado = await _mediatorHandler.EnviarComando<AnonimizarClienteCommand, bool>(command);
 
+                if (OperacaoValida())
+                {
+                    return Ok(anonimizado);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ObterMensagensErro());
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar anonimizar usuário. Erro: {ex.Message}");
+            }
+        }
     }
 }

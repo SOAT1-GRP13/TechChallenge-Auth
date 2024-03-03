@@ -11,6 +11,7 @@ namespace Domain.Base.Messages
         protected Command()
         {
             Timestamp = DateTime.Now;
+            ValidationResult = new ValidationResult();
         }
 
         public virtual bool EhValido()
