@@ -262,7 +262,7 @@ namespace Domain.Testes
         public void AoChamarValidarSeNulo_SeObjetoForNulo_LancarExcecao()
         {
             // Arrange
-            object objeto = null;
+            object? objeto = null;
             var mensagem = "Valor nao bate";
 
             // Act
