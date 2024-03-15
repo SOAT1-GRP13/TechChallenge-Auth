@@ -37,7 +37,7 @@ namespace Application.Autenticacao.UseCases
 
             if (!string.IsNullOrEmpty(autenticado.NomeUsuario))
             {
-                var token = GenerateToken(autenticado.NomeUsuario, autenticado.Role.ToString(), autenticado.Id);
+                var token = GenerateToken(autenticado.NomeUsuario, autenticado.Role.ToString(), autenticado.Id, string.Empty);
                 await _UsuarioLogadoRepository.AddUsuarioLogado(token);
                 return new LogInUsuarioOutput(input.NomeUsuario, token);
             }
@@ -54,7 +54,7 @@ namespace Application.Autenticacao.UseCases
             if (string.IsNullOrEmpty(autenticado.CPF))
                 return new AutenticaClienteOutput();
 
-            var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id);
+            var token = GenerateToken(autenticado.Nome, Roles.Cliente.ToString(), autenticado.Id, autenticado.Email);
 
             await _UsuarioLogadoRepository.AddUsuarioLogado(token);
             return new AutenticaClienteOutput(autenticado.Nome, token);
@@ -64,7 +64,7 @@ namespace Application.Autenticacao.UseCases
         {
             var guid = Guid.NewGuid();
 
-            var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid);
+            var token = GenerateToken(nome, Roles.ClienteSemCpf.ToString(), guid, string.Empty);
 
             await _UsuarioLogadoRepository.AddUsuarioLogado(token);
 
@@ -78,7 +78,7 @@ namespace Application.Autenticacao.UseCases
         }
 
 
-        private string GenerateToken(string name, string role, Guid idUsuario)
+        private string GenerateToken(string name, string role, Guid idUsuario, string email)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var secret = _settings.ClientSecret;
@@ -90,7 +90,8 @@ namespace Application.Autenticacao.UseCases
                 {
                     new Claim(ClaimTypes.NameIdentifier, idUsuario.ToString()),
                     new Claim(ClaimTypes.Name, name),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim(ClaimTypes.Email, email)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
